@@ -364,21 +364,6 @@
     }
     .radio-icon { font-size: 1.1em; }
 
-    /* warning shown when "لا" is selected */
-    .approval-warning {
-      display: none;
-      background: rgba(255,82,82,.08);
-      border: 1px solid rgba(255,82,82,.25);
-      border-right: 3px solid var(--red);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      font-size: .82rem;
-      color: #ff7070;
-      line-height: 1.6;
-      margin-top: 4px;
-    }
-    .approval-warning.show { display: block; }
-
     /* ===== IMPORTANT NOTE ===== */
     .note-box {
       background: rgba(0,229,255,.06);
@@ -651,7 +636,7 @@
       <div class="step active"><span class="step-num">03</span>جهة التدريب</div>
     </div>
 
-    <!-- ONE-TIME WARNING — أعلى الصفحة (معدّل ليشمل المرحلة الثالثة) -->
+    <!-- ONE-TIME WARNING -->
     <div class="note-box" style="margin-bottom:24px;border-right-color:#ff9800;background:rgba(255,152,0,.07);border-color:rgba(255,152,0,.25);">
       <span class="note-icon">🔒</span>
       <p style="color:#ffb74d;">
@@ -771,18 +756,18 @@
           </div>
         </div>
 
-        <!-- ── APPROVAL FIELD (NEW) ── -->
+        <!-- ── APPROVAL FIELD ── -->
         <div class="field col-full">
           <label>
             <span class="icon">✅</span>
-            هل حصلتَ على موافقة الجهة الموجَّه إليها الكتاب أو المُقدَّم للتدريب فيها؟
+            هل حصلتَ على موافقة مبدئية من الجهة المراد التدريب فيها؟
             <span class="req">*</span>
           </label>
           <div class="radio-group">
             <div class="radio-option yes">
               <input type="radio" name="approvalStatus" id="approvalYes" value="yes" />
               <label for="approvalYes">
-                <span class="radio-icon">✔️</span> نعم، حصلتُ على الموافقة
+                <span class="radio-icon">✔️</span> نعم، حصلتُ على موافقة مبدئية
               </label>
             </div>
             <div class="radio-option no">
@@ -793,9 +778,6 @@
             </div>
           </div>
           <div class="field-error" id="err-approval">يجب الإجابة على هذا السؤال قبل الإرسال</div>
-          <div class="approval-warning" id="approvalWarning">
-            ⚠️ يُشترط الحصول على موافقة الجهة قبل تقديم الطلب. يُنصح بمراجعة الجهة المعنية والحصول على موافقتها أولاً ثم إعادة تقديم الاستمارة.
-          </div>
         </div>
 
         <!-- notes -->
@@ -861,7 +843,6 @@
   /* ============================================================
      COUNTDOWN TIMER — الجمعة 15/5/2026 الساعة 6:00 مساءً بتوقيت بغداد (UTC+3)
   ============================================================ */
-  // 15 May 2026, 18:00 Baghdad time = 15:00 UTC
   const DEADLINE = new Date('2026-05-15T15:00:00Z');
 
   function pad(n) { return String(n).padStart(2, '0'); }
@@ -873,7 +854,6 @@
     if (diff <= 0) {
       document.getElementById('countdownDigits').style.display  = 'none';
       document.getElementById('countdownExpired').style.display = 'block';
-      // disable the submit button when expired
       document.getElementById('submitBtn').disabled = true;
       document.querySelector('.btn-text').textContent = 'انتهى وقت التسجيل';
       clearInterval(cdInterval);
@@ -950,16 +930,9 @@
   initCounter('trainingPlace', 'tpCounter', 300);
   initCounter('notes',         'notesCounter', 500);
 
-  /* approval radio — show warning if "لا" selected */
+  /* approval radio — hide error on change */
   document.querySelectorAll('input[name="approvalStatus"]').forEach(radio => {
     radio.addEventListener('change', function() {
-      const warning = document.getElementById('approvalWarning');
-      if (this.value === 'no') {
-        warning.classList.add('show');
-      } else {
-        warning.classList.remove('show');
-      }
-      // hide error on change
       document.getElementById('err-approval').classList.remove('show');
     });
   });
@@ -1006,7 +979,6 @@
       showError('trainingPlace', 'err-trainingPlace', true); valid = false;
     } else showError('trainingPlace', 'err-trainingPlace', false);
 
-    // validate approval
     const approvalChecked = document.querySelector('input[name="approvalStatus"]:checked');
     if (!approvalChecked) {
       document.getElementById('err-approval').classList.add('show');
@@ -1043,7 +1015,7 @@
 🎓 المرحلة: الثالثة
 🏫 الشعبة: ${data.division}
 🏢 جهة التدريب: ${data.trainingPlace}
-✅ موافقة الجهة: ${approvalLabel}
+✅ موافقة مبدئية: ${approvalLabel}
 📝 ملاحظات: ${data.notes || 'لا توجد'}
 ━━━━━━━━━━━━━━━━━━━━━━━━
 🕒 وقت التسجيل: ${now}`
