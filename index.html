@@ -357,11 +357,10 @@
       box-shadow: 0 0 0 3px rgba(0,230,118,.1);
     }
     .radio-option.no input[type="radio"]:checked + label {
-  border-color: var(--green);
-  background: rgba(0,230,118,.08);
-  color: var(--green);
-  box-shadow: 0 0 0 3px rgba(0,230,118,.1);
-}
+      border-color: var(--green);
+      background: rgba(0,230,118,.08);
+      color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0,230,118,.1);
     }
     .radio-icon { font-size: 1.1em; }
 
@@ -612,7 +611,7 @@
     <div class="countdown-icon">⏳</div>
     <div class="countdown-content">
       <div class="countdown-label">
-        <strong>آخر موعد للتسجيل:</strong> الجمعة 15 مايو 2026 — الساعة 6:00 مساءً بتوقيت بغداد
+        <strong>آخر موعد للتسجيل:</strong> الثلاثاء 26 مايو 2026 — الساعة 6:00 مساءً بتوقيت بغداد
       </div>
       <div class="countdown-digits" id="countdownDigits">
         <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><span class="cd-lbl">يوم</span></div>
@@ -703,6 +702,21 @@
       <!-- ── SECTION 2: ACADEMIC ── -->
       <div class="section-title">البيانات الأكاديمية</div>
       <div class="form-grid">
+
+        <!-- stage / المرحلة -->
+        <div class="field col-full">
+          <label for="stage">
+            <span class="icon">🎓</span> المرحلة الدراسية <span class="req">*</span>
+          </label>
+          <select id="stage" name="stage">
+            <option value="">— اختر المرحلة —</option>
+            <option value="الأولى">المرحلة الأولى</option>
+            <option value="الثانية">المرحلة الثانية</option>
+            <option value="الثالثة">المرحلة الثالثة</option>
+            <option value="الرابعة">المرحلة الرابعة</option>
+          </select>
+          <div class="field-error" id="err-stage">يرجى اختيار المرحلة الدراسية</div>
+        </div>
 
         <!-- division -->
         <div class="field col-full">
@@ -842,9 +856,9 @@
   const WORKER_URL = 'https://square-voice-3ce9.alaswedraad.workers.dev';
 
   /* ============================================================
-     COUNTDOWN TIMER — الجمعة 15/5/2026 الساعة 6:00 مساءً بتوقيت بغداد (UTC+3)
+     COUNTDOWN TIMER — الثلاثاء 26/5/2026 الساعة 6:00 مساءً بتوقيت بغداد (UTC+3)
   ============================================================ */
-  const DEADLINE = new Date('2026-05-15T15:00:00Z');
+  const DEADLINE = new Date('2026-05-26T15:00:00Z');
 
   function pad(n) { return String(n).padStart(2, '0'); }
 
@@ -972,6 +986,10 @@
       showError('phone', 'err-phone', true); valid = false;
     } else showError('phone', 'err-phone', false);
 
+    if (!data.stage) {
+      showError('stage', 'err-stage', true); valid = false;
+    } else showError('stage', 'err-stage', false);
+
     if (!data.division) {
       showError('division', 'err-division', true); valid = false;
     } else showError('division', 'err-division', false);
@@ -1013,7 +1031,7 @@
 👤 الاسم: ${data.fullName}
 📧 البريد الجامعي: ${data.email}
 📱 رقم الهاتف: ${data.phone}
-🎓 المرحلة: الثالثة
+🎓 المرحلة: ${data.stage}
 🏫 الشعبة: ${data.division}
 🏢 جهة التدريب: ${data.trainingPlace}
 ✅ موافقة مبدئية: ${approvalLabel}
@@ -1041,6 +1059,7 @@
       fullName:       sanitize(document.getElementById('fullName').value, 80),
       email:          sanitize(document.getElementById('email').value, 100).toLowerCase(),
       phone:          sanitize(document.getElementById('phone').value, 15),
+      stage:          sanitize(document.getElementById('stage').value, 20),
       division:       sanitize(document.getElementById('division').value, 5),
       trainingPlace:  sanitize(document.getElementById('trainingPlace').value, 300),
       notes:          sanitize(document.getElementById('notes').value, 500),
