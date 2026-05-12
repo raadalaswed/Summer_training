@@ -76,6 +76,71 @@
       min-height: 100vh;
     }
 
+    /* ===== COUNTDOWN BANNER ===== */
+    .countdown-banner {
+      width: 100%; max-width: 680px;
+      margin-bottom: 24px;
+      background: rgba(255,152,0,.07);
+      border: 1px solid rgba(255,152,0,.3);
+      border-right: 3px solid #ff9800;
+      border-radius: var(--radius-sm);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      animation: fadeDown .8s ease both .2s;
+    }
+    .countdown-icon { font-size: 1.6rem; flex-shrink: 0; }
+    .countdown-content { flex: 1; }
+    .countdown-label {
+      font-size: .8rem;
+      color: #ffb74d;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .countdown-label strong { color: var(--text); }
+    .countdown-digits {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .cd-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: rgba(255,152,0,.12);
+      border: 1px solid rgba(255,152,0,.25);
+      border-radius: 8px;
+      padding: 8px 14px;
+      min-width: 64px;
+    }
+    .cd-num {
+      font-family: var(--mono);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #ffb74d;
+      line-height: 1;
+    }
+    .cd-lbl {
+      font-size: .65rem;
+      color: var(--text3);
+      margin-top: 4px;
+    }
+    .cd-sep {
+      font-family: var(--mono);
+      font-size: 1.3rem;
+      color: rgba(255,152,0,.4);
+      line-height: 1;
+      margin-bottom: 14px;
+    }
+    .countdown-expired {
+      display: none;
+      font-size: .9rem;
+      color: var(--red);
+      font-weight: 700;
+    }
+
     /* ===== HEADER ===== */
     .header {
       text-align: center;
@@ -242,6 +307,77 @@
       display: none;
     }
     .field-error.show { display: block; }
+
+    /* ===== RADIO GROUP (approval field) ===== */
+    .radio-group {
+      display: flex;
+      gap: 12px;
+      margin-top: 4px;
+      flex-wrap: wrap;
+    }
+    .radio-option {
+      flex: 1;
+      min-width: 120px;
+    }
+    .radio-option input[type="radio"] {
+      display: none;
+    }
+    .radio-option label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 12px 20px;
+      background: rgba(255,255,255,.03);
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-size: .92rem;
+      font-weight: 600;
+      color: var(--text2);
+      transition: all .2s;
+      user-select: none;
+      width: 100%;
+    }
+    .radio-option label:hover {
+      border-color: var(--accent2);
+      background: rgba(0,229,255,.04);
+      color: var(--text);
+    }
+    .radio-option input[type="radio"]:checked + label {
+      border-color: var(--accent);
+      background: rgba(0,229,255,.1);
+      color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(0,229,255,.1);
+    }
+    .radio-option.yes input[type="radio"]:checked + label {
+      border-color: var(--green);
+      background: rgba(0,230,118,.08);
+      color: var(--green);
+      box-shadow: 0 0 0 3px rgba(0,230,118,.1);
+    }
+    .radio-option.no input[type="radio"]:checked + label {
+      border-color: var(--red);
+      background: rgba(255,82,82,.08);
+      color: var(--red);
+      box-shadow: 0 0 0 3px rgba(255,82,82,.1);
+    }
+    .radio-icon { font-size: 1.1em; }
+
+    /* warning shown when "لا" is selected */
+    .approval-warning {
+      display: none;
+      background: rgba(255,82,82,.08);
+      border: 1px solid rgba(255,82,82,.25);
+      border-right: 3px solid var(--red);
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-size: .82rem;
+      color: #ff7070;
+      line-height: 1.6;
+      margin-top: 4px;
+    }
+    .approval-warning.show { display: block; }
 
     /* ===== IMPORTANT NOTE ===== */
     .note-box {
@@ -454,6 +590,7 @@
       .form-steps { flex-direction: column; }
       .step { border-left: none; border-bottom: 1px solid var(--border); }
       .step:last-child { border-bottom: none; }
+      .radio-group { flex-direction: column; }
     }
   </style>
 </head>
@@ -484,6 +621,26 @@
     <p>استمارة تسجيل خاصة بطلاب قسم هندسة الأمن السيبراني للالتحاق ببرنامج التدريب الصيفي للعام الدراسي 2025–2026</p>
   </header>
 
+  <!-- COUNTDOWN BANNER -->
+  <div class="countdown-banner" id="countdownBanner">
+    <div class="countdown-icon">⏳</div>
+    <div class="countdown-content">
+      <div class="countdown-label">
+        <strong>آخر موعد للتسجيل:</strong> الجمعة 15 مايو 2026 — الساعة 6:00 مساءً بتوقيت بغداد
+      </div>
+      <div class="countdown-digits" id="countdownDigits">
+        <div class="cd-unit"><span class="cd-num" id="cd-days">00</span><span class="cd-lbl">يوم</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-hours">00</span><span class="cd-lbl">ساعة</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-mins">00</span><span class="cd-lbl">دقيقة</span></div>
+        <div class="cd-sep">:</div>
+        <div class="cd-unit"><span class="cd-num" id="cd-secs">00</span><span class="cd-lbl">ثانية</span></div>
+      </div>
+      <div class="countdown-expired" id="countdownExpired">⛔ انتهى وقت التسجيل</div>
+    </div>
+  </div>
+
   <!-- FORM CARD -->
   <div class="form-card" id="formCard">
 
@@ -494,12 +651,13 @@
       <div class="step active"><span class="step-num">03</span>جهة التدريب</div>
     </div>
 
-    <!-- ONE-TIME WARNING — أعلى الصفحة -->
+    <!-- ONE-TIME WARNING — أعلى الصفحة (معدّل ليشمل المرحلة الثالثة) -->
     <div class="note-box" style="margin-bottom:24px;border-right-color:#ff9800;background:rgba(255,152,0,.07);border-color:rgba(255,152,0,.25);">
       <span class="note-icon">🔒</span>
       <p style="color:#ffb74d;">
-        <strong style="color:var(--text);">تنبيه مهم — التسجيل مرة واحدة فقط</strong>
-        لا يمكنك إرسال هذه الاستمارة أكثر من مرة واحدة باستخدام نفس البريد الجامعي.
+        <strong style="color:var(--text);">تنبيه مهم — هذه الاستمارة مخصصة لطلبة المرحلة الثالثة فقط</strong>
+        لا يحق لطلبة المراحل الأخرى التقديم عبر هذه الاستمارة.
+        كما لا يمكنك إرسالها أكثر من مرة واحدة باستخدام نفس البريد الجامعي.
         تأكد من صحة <strong style="color:var(--text)">جميع بياناتك</strong> قبل الضغط على زر الإرسال، إذ لن تتمكن من التعديل لاحقاً.
       </p>
     </div>
@@ -560,7 +718,7 @@
       <div class="section-title">البيانات الأكاديمية</div>
       <div class="form-grid">
 
-        <!-- division — full width since stage is removed -->
+        <!-- division -->
         <div class="field col-full">
           <label for="division">
             <span class="icon">🏫</span> الشعبة <span class="req">*</span>
@@ -610,6 +768,33 @@
               <em>مثال: هيئة الاتصالات والإعلام الرقمي / قسم أمن المعلومات</em><br/>
               الطلبات غير المفصّلة لن تُقبل.
             </p>
+          </div>
+        </div>
+
+        <!-- ── APPROVAL FIELD (NEW) ── -->
+        <div class="field col-full">
+          <label>
+            <span class="icon">✅</span>
+            هل حصلتَ على موافقة الجهة الموجَّه إليها الكتاب أو المُقدَّم للتدريب فيها؟
+            <span class="req">*</span>
+          </label>
+          <div class="radio-group">
+            <div class="radio-option yes">
+              <input type="radio" name="approvalStatus" id="approvalYes" value="yes" />
+              <label for="approvalYes">
+                <span class="radio-icon">✔️</span> نعم، حصلتُ على الموافقة
+              </label>
+            </div>
+            <div class="radio-option no">
+              <input type="radio" name="approvalStatus" id="approvalNo" value="no" />
+              <label for="approvalNo">
+                <span class="radio-icon">✖️</span> لا، لم أحصل على موافقة بعد
+              </label>
+            </div>
+          </div>
+          <div class="field-error" id="err-approval">يجب الإجابة على هذا السؤال قبل الإرسال</div>
+          <div class="approval-warning" id="approvalWarning">
+            ⚠️ يُشترط الحصول على موافقة الجهة قبل تقديم الطلب. يُنصح بمراجعة الجهة المعنية والحصول على موافقتها أولاً ثم إعادة تقديم الاستمارة.
           </div>
         </div>
 
@@ -670,49 +855,62 @@
 <script>
   /* ============================================================
      CONFIGURATION
-     ─────────────────────────────────────────────────────────────
-     ضع هنا رابط Cloudflare Worker الخاص بك بعد النشر.
-     لا تضع Token التليغرام هنا — يبقى Token داخل Worker فقط.
   ============================================================ */
   const WORKER_URL = 'https://square-voice-3ce9.alaswedraad.workers.dev';
 
   /* ============================================================
-     XSS PROTECTION — تنظيف جميع المدخلات قبل الاستخدام
+     COUNTDOWN TIMER — الجمعة 15/5/2026 الساعة 6:00 مساءً بتوقيت بغداد (UTC+3)
   ============================================================ */
-  function escapeHtml(str) {
-    return String(str)
-      .replace(/&/g, '&amp;')
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-      .replace(/"/g, '&quot;')
-      .replace(/'/g, '&#x27;')
-      .replace(/\//g, '&#x2F;');
+  // 15 May 2026, 18:00 Baghdad time = 15:00 UTC
+  const DEADLINE = new Date('2026-05-15T15:00:00Z');
+
+  function pad(n) { return String(n).padStart(2, '0'); }
+
+  function updateCountdown() {
+    const now  = new Date();
+    const diff = DEADLINE - now;
+
+    if (diff <= 0) {
+      document.getElementById('countdownDigits').style.display  = 'none';
+      document.getElementById('countdownExpired').style.display = 'block';
+      // disable the submit button when expired
+      document.getElementById('submitBtn').disabled = true;
+      document.querySelector('.btn-text').textContent = 'انتهى وقت التسجيل';
+      clearInterval(cdInterval);
+      return;
+    }
+
+    const days  = Math.floor(diff / 86400000);
+    const hours = Math.floor((diff % 86400000) / 3600000);
+    const mins  = Math.floor((diff % 3600000)  / 60000);
+    const secs  = Math.floor((diff % 60000)    / 1000);
+
+    document.getElementById('cd-days').textContent  = pad(days);
+    document.getElementById('cd-hours').textContent = pad(hours);
+    document.getElementById('cd-mins').textContent  = pad(mins);
+    document.getElementById('cd-secs').textContent  = pad(secs);
   }
 
-  // تنظيف النص: إزالة أي HTML أو script أو محارف خطرة
+  updateCountdown();
+  const cdInterval = setInterval(updateCountdown, 1000);
+
+  /* ============================================================
+     XSS PROTECTION
+  ============================================================ */
   function sanitize(str, maxLen = 500) {
     if (typeof str !== 'string') return '';
     return str
       .trim()
       .slice(0, maxLen)
-      // إزالة أي علامات HTML
       .replace(/<[^>]*>/g, '')
-      // إزالة javascript: و data: من المدخلات
       .replace(/javascript\s*:/gi, '')
       .replace(/data\s*:/gi, '')
-      // إزالة event handlers مثل onerror= onclick=
       .replace(/on\w+\s*=/gi, '')
       .trim();
   }
 
-  // عرض نص آمن داخل DOM بدون innerHTML
-  function safeText(elementId, text) {
-    const el = document.getElementById(elementId);
-    if (el) el.textContent = text;
-  }
-
   /* ============================================================
-     DUPLICATE PREVENTION — localStorage
+     DUPLICATE PREVENTION
   ============================================================ */
   const STORAGE_KEY = 'registered_emails_csd';
 
@@ -737,9 +935,7 @@
   const form          = document.getElementById('regForm');
   const submitBtn     = document.getElementById('submitBtn');
   const alertError    = document.getElementById('alertError');
-  const alertErrorMsg = document.getElementById('alertErrorMsg');
   const successState  = document.getElementById('successState');
-  const refCode       = document.getElementById('refCode');
 
   /* char counters */
   function initCounter(fieldId, counterId, max) {
@@ -754,14 +950,33 @@
   initCounter('trainingPlace', 'tpCounter', 300);
   initCounter('notes',         'notesCounter', 500);
 
+  /* approval radio — show warning if "لا" selected */
+  document.querySelectorAll('input[name="approvalStatus"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+      const warning = document.getElementById('approvalWarning');
+      if (this.value === 'no') {
+        warning.classList.add('show');
+      } else {
+        warning.classList.remove('show');
+      }
+      // hide error on change
+      document.getElementById('err-approval').classList.remove('show');
+    });
+  });
+
   /* ============================================================
      VALIDATION
   ============================================================ */
   function showError(fieldId, errId, show) {
     const field = document.getElementById(fieldId);
     const err   = document.getElementById(errId);
-    if (show) { field.classList.add('error'); err.classList.add('show'); }
-    else       { field.classList.remove('error'); err.classList.remove('show'); }
+    if (show) {
+      if (field) field.classList.add('error');
+      if (err)   err.classList.add('show');
+    } else {
+      if (field) field.classList.remove('error');
+      if (err)   err.classList.remove('show');
+    }
   }
 
   function validateEmail(email) {
@@ -791,6 +1006,15 @@
       showError('trainingPlace', 'err-trainingPlace', true); valid = false;
     } else showError('trainingPlace', 'err-trainingPlace', false);
 
+    // validate approval
+    const approvalChecked = document.querySelector('input[name="approvalStatus"]:checked');
+    if (!approvalChecked) {
+      document.getElementById('err-approval').classList.add('show');
+      valid = false;
+    } else {
+      document.getElementById('err-approval').classList.remove('show');
+    }
+
     return valid;
   }
 
@@ -809,6 +1033,7 @@
       year: 'numeric', month: 'long', day: 'numeric',
       hour: '2-digit', minute: '2-digit'
     });
+    const approvalLabel = data.approvalStatus === 'yes' ? 'نعم ✅' : 'لا ❌';
     return (
 `📥 طلب تدريب صيفي جديد
 ━━━━━━━━━━━━━━━━━━━━━━━━
@@ -818,6 +1043,7 @@
 🎓 المرحلة: الثالثة
 🏫 الشعبة: ${data.division}
 🏢 جهة التدريب: ${data.trainingPlace}
+✅ موافقة الجهة: ${approvalLabel}
 📝 ملاحظات: ${data.notes || 'لا توجد'}
 ━━━━━━━━━━━━━━━━━━━━━━━━
 🕒 وقت التسجيل: ${now}`
@@ -836,13 +1062,16 @@
       return;
     }
 
+    const approvalChecked = document.querySelector('input[name="approvalStatus"]:checked');
+
     const data = {
-      fullName:      sanitize(document.getElementById('fullName').value, 80),
-      email:         sanitize(document.getElementById('email').value, 100).toLowerCase(),
-      phone:         sanitize(document.getElementById('phone').value, 15),
-      division:      sanitize(document.getElementById('division').value, 5),
-      trainingPlace: sanitize(document.getElementById('trainingPlace').value, 300),
-      notes:         sanitize(document.getElementById('notes').value, 500),
+      fullName:       sanitize(document.getElementById('fullName').value, 80),
+      email:          sanitize(document.getElementById('email').value, 100).toLowerCase(),
+      phone:          sanitize(document.getElementById('phone').value, 15),
+      division:       sanitize(document.getElementById('division').value, 5),
+      trainingPlace:  sanitize(document.getElementById('trainingPlace').value, 300),
+      notes:          sanitize(document.getElementById('notes').value, 500),
+      approvalStatus: approvalChecked ? approvalChecked.value : '',
     };
 
     if (!validateForm(data)) {
@@ -872,7 +1101,6 @@
         markEmailRegistered(data.email);
         showSuccess(generateRef());
       } else {
-        // sanitize رسالة الخطأ القادمة من الخارج قبل عرضها
         throw new Error(sanitize(result.description || 'خطأ غير معروف', 100));
       }
     } catch (err) {
@@ -897,7 +1125,6 @@
   }
 
   function showAlert(msg) {
-    // استخدام textContent وليس innerHTML لمنع XSS
     document.getElementById('alertErrorMsg').textContent = sanitize(msg, 200);
     alertError.classList.add('show');
     alertError.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -907,7 +1134,6 @@
     form.style.display = 'none';
     document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
     successState.classList.add('show');
-    // textContent آمن من XSS
     document.getElementById('refCode').textContent = 'REF# ' + sanitize(ref, 20);
     successState.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
