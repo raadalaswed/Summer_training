@@ -1088,7 +1088,7 @@
       const result = await res.json();
       if (result.ok) {
         markEmailRegistered(data.email);
-        showSuccess(generateRef());
+        showSuccess();
       } else {
         throw new Error(sanitize(result.description || 'خطأ غير معروف', 100));
       }
@@ -1119,11 +1119,10 @@
     alertError.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
-  function showSuccess(ref) {
+  function showSuccess() {
     form.style.display = 'none';
     document.querySelectorAll('.alert').forEach(a => a.classList.remove('show'));
     successState.classList.add('show');
-    document.getElementById('refCode').textContent = 'REF# ' + sanitize(ref, 20);
     successState.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
